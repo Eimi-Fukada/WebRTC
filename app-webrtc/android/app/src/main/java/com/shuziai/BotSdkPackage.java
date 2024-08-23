@@ -1,4 +1,4 @@
-package com.awesomeproject;
+package com.shuziai;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;

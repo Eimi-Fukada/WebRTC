@@ -9,14 +9,13 @@ const app = express();
 const { ExpressPeerServer } = require("peer");
 const io = require("socket.io")(httpsServer);
 
-const { v4: uuidV4 } = require("uuid");
+// const { v4: uuidV4 } = require("uuid");
 
 const peerServer = ExpressPeerServer(httpsServer, {
-  proxied: true,
-  debug: true,
-  path: "/mypeer",
   port: 3000,
-  ssl: {},
+  path: "/mypeer",
+  debug: true,
+  // proxied: true,
 });
 
 app.use(peerServer);
@@ -29,8 +28,8 @@ io.on("connection", (socket) => {
 
 /* GET home page. */
 indexRouter.get("/", function (req, res, next) {
-  // res.render("index", { title: "Express" });
-  res.redirect(`/${uuidV4()}`);
+  res.render("index", { title: "Express" });
+  // res.redirect(`/${uuidV4()}`);
 });
 
 module.exports = indexRouter;

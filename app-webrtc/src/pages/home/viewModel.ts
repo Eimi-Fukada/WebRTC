@@ -5,7 +5,7 @@ import apis from '~/request/index';
 import { routeNames } from '~/routes/const';
 import { useNavigation } from '@react-navigation/native';
 import BotSdkModule from '~/jsBridge/BotSdkModule';
-import { mediaDevices } from 'react-native-webrtc';
+import { mediaDevices, RTCPeerConnection } from 'react-native-webrtc';
 
 export function useViewModal() {
   /** write your js */
@@ -49,6 +49,8 @@ export function useViewModal() {
   const [open, setOpen] = useState(false);
   const navigation = useNavigation() as any;
   const [localMediaStream, setLocalMediaStream] = useState<any>(null);
+  const [peerConnection, setPeerConnection] = useState<any>(null);
+  const [remoteStream, setRemoteStream] = useState<any>(null);
 
   const handleLinking = async () => {
     try {
@@ -143,10 +145,24 @@ export function useViewModal() {
 
   // webrtc test
   const handleTestWebRtc = async () => {
+    const configuration = {
+      iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' }, // 公共 STUN 服务器
+      ],
+    };
     if (!localMediaStream) {
       const mediaStream = await mediaDevices.getUserMedia({ video: true });
       console.log('mediaStream===', mediaStream);
       setLocalMediaStream(mediaStream);
+
+      const peerConnection = new RTCPeerConnection(configuration);
+      setPeerConnection(peerConnection);
+
+      mediaStream.getTracks().forEach((track) => {
+        peerConnection.addTrack(track, mediaStream);
+      });
+
+      // peerConnection.addEventListener('icecandidate')
     }
   };
 

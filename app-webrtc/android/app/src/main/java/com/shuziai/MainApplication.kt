@@ -1,4 +1,4 @@
-package com.awesomeproject
+package com.shuziai
 
 import android.app.Application
 import com.facebook.react.PackageList
@@ -10,7 +10,7 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
-import com.awesomeproject.BotSdkPackage
+import com.shuziai.BotSdkPackage
 
 class MainApplication : Application(), ReactApplication {
 

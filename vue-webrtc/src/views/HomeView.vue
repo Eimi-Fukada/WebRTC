@@ -34,37 +34,35 @@ const getUserMedia = async () => {
 
 const initPeer = () => {
   peer.value = new Peer({
-    host: '192.168.1.162',
+    host: 'localhost',
     port: 3000,
     path: '/mypeer',
-    secure: true,
     debug: 2
   })
 
-  peer.value.on('open', (id) => {
-    console.log('id==', id)
-    peerId.value = id
-  })
+  // peer.value.on('open', (id) => {
+  //   console.log('id==', id)
+  //   peerId.value = id
+  // })
 
-  peer.value.on('connection', (connection) => {
-    console.log('connection==', connection)
-  })
+  // peer.value.on('connection', (connection) => {
+  //   console.log('connection==', connection)
+  // })
 
-  peer.value.on('call', (call) => {
-    console.log('call==', call)
-    call.answer(streams.value[0])
-    call.on('stream', (remoteStream) => {
-      remoteStreams.value = remoteStreams.value.concat(remoteStream)
-      streams.value = [...streams.value, ...remoteStreams.value]
-    })
-  })
+  // peer.value.on('call', (call) => {
+  //   console.log('call==', call)
+  //   call.answer(streams.value[0])
+  //   call.on('stream', (remoteStream) => {
+  //     remoteStreams.value = remoteStreams.value.concat(remoteStream)
+  //     streams.value = [...streams.value, ...remoteStreams.value]
+  //   })
+  // })
 }
 
 const startConnect = async () => {
   const userSteam = await getUserMedia()
   streams.value = streams.value.concat(userSteam)
   console.log('====', userSteam)
-  initPeer()
   if (peerId.value) {
     const call = peer.value?.call(peerId.value, userSteam)
     call?.on('error', (error) => {
@@ -73,9 +71,9 @@ const startConnect = async () => {
   }
 }
 
-// onMounted(() => {
-//   initPeer()
-// })
+onMounted(() => {
+  initPeer()
+})
 </script>
 
 <style scoped>
