@@ -35,3 +35,7 @@ export function guid() {
 export function sleep(delay = 1000): Promise<any> {
   return new Promise((resolve: any) => setTimeout(resolve, delay));
 }
+
+export default function classnames(...style: any) {
+  return style;
+}

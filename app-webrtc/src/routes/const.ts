@@ -7,6 +7,8 @@ import React from 'react';
 export const routeNames = {
   Home: '/pages/home/index',
   SleepMonitor: '/pages/sleepMonitor/index',
+  Welcome: '/pages/welcome/index',
+  Mine: '/pages/mine/index',
 };
 
 /**
@@ -14,6 +16,9 @@ export const routeNames = {
  */
 export type RootStackParamList = {
   Home: undefined;
+  Welcome: undefined;
+  Mine: undefined;
+  _tab: undefined;
 };
 
 export type RouteNameType = keyof typeof routeNames;
