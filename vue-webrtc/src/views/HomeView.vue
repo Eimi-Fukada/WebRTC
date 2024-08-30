@@ -1,14 +1,22 @@
 <template>
   <div>
     <video
-      v-for="(item, index) in streams"
-      :key="index"
-      :srcObject="item"
+      :srcObject="localStream"
       autoplay
       muted
       playsinline
       class="video"
+      style="background-color: aquamarine"
     />
+    <video
+      :srcObject="remoteStream"
+      autoplay
+      muted
+      playsinline
+      class="video"
+      style="background-color: bisque"
+    />
+    <input v-model="inputValue" placeholder="confirm your peerid" />
     <button @click="startConnect" class="btn">开始</button>
   </div>
 </template>
@@ -17,10 +25,12 @@
 import { onMounted, ref } from 'vue'
 import Peer from 'peerjs'
 
-const peer = ref<Peer>()
+const peerRef = ref<Peer>()
 const peerId = ref<string>('')
-const streams = ref<MediaStream[]>([])
-const remoteStreams = ref<MediaStream[]>([])
+const inputValue = ref<string>('')
+
+const localStream = ref<MediaStream>()
+const remoteStream = ref<MediaStream>()
 
 const getUserMedia = async () => {
   try {
@@ -33,40 +43,28 @@ const getUserMedia = async () => {
 }
 
 const initPeer = () => {
-  peer.value = new Peer({
-    host: 'localhost',
-    port: 3000,
-    path: '/mypeer',
-    debug: 2
+  const peer = new Peer()
+  peerRef.value = peer
+  peerRef.value.on('open', (id) => {
+    console.log('id===', id)
+    peerId.value = id
   })
-
-  // peer.value.on('open', (id) => {
-  //   console.log('id==', id)
-  //   peerId.value = id
-  // })
-
-  // peer.value.on('connection', (connection) => {
-  //   console.log('connection==', connection)
-  // })
-
-  // peer.value.on('call', (call) => {
-  //   console.log('call==', call)
-  //   call.answer(streams.value[0])
-  //   call.on('stream', (remoteStream) => {
-  //     remoteStreams.value = remoteStreams.value.concat(remoteStream)
-  //     streams.value = [...streams.value, ...remoteStreams.value]
-  //   })
-  // })
+  peerRef.value.on('call', (call) => {
+    console.log('Incoming call:', call)
+    call.answer(localStream.value)
+    call.on('stream', (stream) => {
+      remoteStream.value = stream
+    })
+  })
 }
 
 const startConnect = async () => {
-  const userSteam = await getUserMedia()
-  streams.value = streams.value.concat(userSteam)
-  console.log('====', userSteam)
-  if (peerId.value) {
-    const call = peer.value?.call(peerId.value, userSteam)
-    call?.on('error', (error) => {
-      console.log('call error', error)
+  const userStream = await getUserMedia()
+  localStream.value = userStream
+  if (inputValue.value && peerRef.value) {
+    const call = peerRef.value.call(inputValue.value, userStream)
+    call.on('stream', (stream) => {
+      remoteStream.value = stream
     })
   }
 }
